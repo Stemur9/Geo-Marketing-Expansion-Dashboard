@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="de" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Expansion Strategy & Geo-Marketing Copilot</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js for Decision Science Data Visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Inter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+    ::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.3); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(100,116,139,0.5); }
+    .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+    .dark .glass-card { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(12px); }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full font-sans antialiased transition-colors duration-200">
+
+  <!-- Header / Navigation -->
+  <header class="sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-filter backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+          <i class="fa-solid font-bold fa-globe text-xl"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-indigo-600 dark:from-brand-400 dark:to-indigo-400">GeoExpand AI</span>
+          <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Decision Science + AI</span>
+        </div>
+      </div>
+
+      <!-- Action Items & Options -->
+      <div class="flex items-center gap-3">
+        <!-- Optional Gemini API Key Modal Trigger -->
+        <button id="apiKeyBtn" onclick="toggleApiModal()" class="flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-key text-amber-500"></i>
+          <span id="apiStatusText">API Key (Optional)</span>
+        </button>
+
+        <!-- Export Summary Button -->
+        <button onclick="exportExecutiveSummary()" class="flex items-center gap-2 text-xs font-semibold bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-lg shadow-sm transition">
+          <i class="fa-solid fa-file-export"></i>
+          <span class="hidden sm:inline">Export Report</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-lg border border-slate-300 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-moon dark:hidden text-slate-600"></i>
+          <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- Top Hero Section / Intro banner for recruiters -->
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-brand-950 text-white p-6 sm:p-8 shadow-xl">
+      <div class="relative z-10 max-w-3xl space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-brand-300 text-xs font-medium backdrop-blur-sm">
+          <i class="fa-solid fa-brain"></i> Decision Science & Marketing Intelligence Portfolio Project
+        </div>
+        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">Global Market Expansion & AI Strategy Dashboard</h1>
+        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+          Simulieren Sie internationale Expansionen durch gewichtete Scoring-Modelle (Decision Science), Wettbewerbs-Analysen und KI-gestützte Go-To-Market-Strategien für Digital-Marketing-Teams.
+        </p>
+      </div>
+      <!-- Abstract BG shapes -->
+      <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute right-40 top-0 w-48 h-48 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
+    </div>
+
+    <!-- Controls Section: Industry + Decision Science Weights + Country Select -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Industry & Preset Selector -->
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700/60 flex flex-col justify-between">
+        <div>
+          <h2 class="text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white mb-4">
+            <i class="fa-solid fa-sliders text-brand-500"></i> 1. Szenario & Branche
+          </h2>
+          
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Produkt / Business Typ</label>
+              <select id="industryType" onchange="applyIndustryPreset()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-brand-500 outline-none">
+                <option value="ecommerce">B2C E-Commerce & Consumer Brands</option>
+                <option value="saas">B2B SaaS & Tech Enterprise</option>
+                <option value="fintech">Fintech & Digital Banking</option>
+                <option value="health">HealthTech & D2C Supplements</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Haupt-Märkte im Vergleich (Mehrfachauswahl)</label>
+              <div id="countryChips" class="flex flex-wrap gap-2 mt-2">
+                <!-- Country Chips injected via JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700/50 text-xs text-slate-500 dark:text-slate-400">
+          <i class="fa-solid fa-circle-info mr-1 text-brand-500"></i> Ändern Sie Branchen, um Scoring-Gewichtungen automatisch anzupassen.
+        </div>
+      </div>
+
+      <!-- Decision Science Weighting Sliders -->
+      <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700/60">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+            <i class="fa-solid fa-scale-balanced text-brand-500"></i> 2. Decision Science Gewichtung (Kriterien-Faktoren)
+          </h2>
+          <button onclick="resetWeights()" class="text-xs text-brand-600 dark:text-brand-400 hover:underline font-medium">Zurücksetzen</button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+          <!-- Weight Sliders -->
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>E-Commerce Wachstumsrate</span>
+              <span id="wEcomVal" class="font-bold text-brand-600 dark:text-brand-400">25%</span>
+            </div>
+            <input type="range" id="wEcom" min="0" max="50" value="25" oninput="updateCalculations()" class="w-full accent-brand-600 bg-slate-200 dark:bg-slate-700 h-2 rounded-lg cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>Kaufkraft (BIP pro Kopf)</span>
+              <span id="wGdpVal" class="font-bold text-brand-600 dark:text-brand-400">25%</span>
+            </div>
+            <input type="range" id="wGdp" min="0" max="50" value="25" oninput="updateCalculations()" class="w-full accent-brand-600 bg-slate-200 dark:bg-slate-700 h-2 rounded-lg cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>Digital/Social Penetration</span>
+              <span id="wDigiVal" class="font-bold text-brand-600 dark:text-brand-400">20%</span>
+            </div>
+            <input type="range" id="wDigi" min="0" max="50" value="20" oninput="updateCalculations()" class="w-full accent-brand-600 bg-slate-200 dark:bg-slate-700 h-2 rounded-lg cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>Ad-CPM Effizienz (Günstigere Ads = Höher)</span>
+              <span id="wCpmVal" class="font-bold text-brand-600 dark:text-brand-400">15%</span>
+            </div>
+            <input type="range" id="wCpm" min="0" max="50" value="15" oninput="updateCalculations()" class="w-full accent-brand-600 bg-slate-200 dark:bg-slate-700 h-2 rounded-lg cursor-pointer">
+          </div>
+
+          <div class="sm:col-span-2">
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>Wettbewerbsintensität (Niedrigerer Wettbewerb = Höherer Score)</span>
+              <span id="wCompVal" class="font-bold text-brand-600 dark:text-brand-400">15%</span>
+            </div>
+            <input type="range" id="wComp" min="0" max="50" value="15" oninput="updateCalculations()" class="w-full accent-brand-600 bg-slate-200 dark:bg-slate-700 h-2 rounded-lg cursor-pointer">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Expansion Matrix & Ranking Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Country Expansion Ranking Scorecard (2 Cols) -->
+      <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700/60">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <i class="fa-solid fa-trophy text-amber-500"></i> Market Expansion Score Matrix
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Dynamisch berechnet via Decision Science Multi-Criteria Decision Analysis (MCDA)</p>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Live Calculated</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 dark:border-slate-700 text-[11px] uppercase tracking-wider text-slate-400">
+                <th class="py-3 px-3">Rang & Land</th>
+                <th class="py-3 px-3">Expansions-Score</th>
+                <th class="py-3 px-3">Chancen (Opportunity)</th>
+                <th class="py-3 px-3">Risiko Index</th>
+                <th class="py-3 px-3">Est. ROI Tier</th>
+                <th class="py-3 px-3 text-right">Aktion</th>
+              </tr>
+            </thead>
+            <tbody id="rankingTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/50 text-sm font-medium">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2x2 Positioning Matrix Canvas -->
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700/60 flex flex-col justify-between">
+        <div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+            <i class="fa-solid fa-chart-line text-indigo-500"></i> 2x2 Positionierungs-Matrix
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Opportunity (Y) vs. Market Risk (X)</p>
+          
+          <div class="relative w-full aspect-square bg-slate-50 dark:bg-slate-900 rounded-xl p-2 border border-slate-200 dark:border-slate-700/70">
+            <canvas id="matrixCanvas" class="w-full h-full"></canvas>
+          </div>
+        </div>
+        <div class="flex justify-between text-[10px] text-slate-400 mt-2 font-medium">
+          <span>← Niedriges Risiko</span>
+          <span>Hohes Risiko →</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Comparative Visualizations (Bar Chart) -->
+    <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700/60">
+      <h2 class="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-chart-column text-brand-500"></i> Märkte-Vergleich: Metriken Aufschlüsselung
+      </h2>
+      <div class="h-64 sm:h-80 w-full">
+        <canvas id="comparisonChart"></canvas>
+      </div>
+    </div>
+
+    <!-- AI Expansion Strategy Copilot Section -->
+    <div class="bg-gradient-to-br from-white via-slate-50 to-brand-50/30 dark:from-slate-800 dark:via-slate-800 dark:to-slate-900/60 rounded-2xl p-6 sm:p-8 shadow-md border border-brand-100 dark:border-slate-700">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-200 dark:border-slate-700/80 pb-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-brand-100 dark:bg-brand-900/50 text-brand-700 dark:text-brand-300 text-xs font-bold mb-2">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Decision Science + Marketing AI Copilot
+          </div>
+          <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Strategischer KI-Markteintritts-Assistent</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Wählen Sie ein Ziel-Land für die automatische Generierung eines Go-To-Market Plans.</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <select id="targetCountrySelect" class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2 text-sm font-semibold outline-none focus:ring-2 focus:ring-brand-500">
+            <!-- Dynamically filled -->
+          </select>
+          <button id="generateAiBtn" onclick="generateAiStrategy()" class="flex items-center gap-2 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-md transition transform active:scale-95">
+            <i class="fa-solid fa-bolt"></i>
+            <span>Strategie Generieren</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- AI Results Display Container -->
+      <div id="aiOutputContainer" class="space-y-6">
+        <div class="text-center py-12 text-slate-400">
+          <i class="fa-solid fa-compass-drafting text-4xl mb-3 text-brand-400 opacity-60"></i>
+          <p class="text-sm font-medium">Klicken Sie oben auf <strong>"Strategie Generieren"</strong>, um die Analyse zu starten.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 mt-12 py-8 bg-white dark:bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 dark:text-slate-400 space-y-2">
+      <p class="font-semibold text-slate-700 dark:text-slate-300">GeoExpand AI — Academic & Recruitment Portfolio Project</p>
+      <p>Schnittstelle: BWL &bull; Digital Marketing &bull; Decision Science &bull; AI Strategy</p>
+    </div>
+  </footer>
+
+  <!-- Optional API Key Modal -->
+  <div id="apiModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+          <i class="fa-solid fa-key text-amber-500"></i> Google Gemini API Key
+        </h3>
+        <button onclick="toggleApiModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+        Dieses Dashboard funktioniert <strong>100% kostenlos</strong> mit der eingebauten Heuristic AI Engine. Optional können Sie hier Ihren eigenen Google Gemini API-Key eintragen, um echte Live-LLM Aufrufe zu tätigen.
+      </p>
+      <input type="password" id="userApiKeyInput" placeholder="AIzaSy..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-sm font-mono mb-4 focus:ring-2 focus:ring-brand-500 outline-none">
+      <div class="flex justify-end gap-2">
+        <button onclick="clearApiKey()" class="px-3 py-1.5 text-xs text-red-600 dark:text-red-400 font-semibold hover:underline">Löschen</button>
+        <button onclick="saveApiKey()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-lg shadow">Speichern</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard JavaScript Engine -->
+  <script>
+    // --- DATABASE: Real-world international market datasets ---
+    const MARKET_DATABASE = [
+      { id: 'USA', name: 'USA', flag: '🇺🇸', ecomGrowth: 11.2, gdpPerCap: 76000, digitalPen: 92, adCpmScore: 30, compLevel: 90, riskIndex: 25 },
+      { id: 'DEU', name: 'Deutschland', flag: '🇩🇪', ecomGrowth: 7.8, gdpPerCap: 48000, digitalPen: 89, adCpmScore: 55, compLevel: 75, riskIndex: 20 },
+      { id: 'GBR', name: 'Großbritannien', flag: '🇬🇧', ecomGrowth: 9.5, gdpPerCap: 46000, digitalPen: 94, adCpmScore: 40, compLevel: 85, riskIndex: 22 },
+      { id: 'JPN', name: 'Japan', flag: '🇯🇵', ecomGrowth: 6.4, gdpPerCap: 39000, digitalPen: 90, adCpmScore: 60, compLevel: 80, riskIndex: 18 },
+      { id: 'BRA', name: 'Brasilien', flag: '🇧🇷', ecomGrowth: 17.5, gdpPerCap: 8900, digitalPen: 78, adCpmScore: 85, compLevel: 50, riskIndex: 55 },
+      { id: 'IND', name: 'Indien', flag: '🇮🇳', ecomGrowth: 21.0, gdpPerCap: 2400, digitalPen: 52, adCpmScore: 92, compLevel: 65, riskIndex: 60 },
+      { id: 'ARE', name: 'VAE (Dubai)', flag: '🇦🇪', ecomGrowth: 14.8, gdpPerCap: 53000, digitalPen: 99, adCpmScore: 45, compLevel: 70, riskIndex: 28 },
+      { id: 'AUS', name: 'Australien', flag: '🇦🇺', ecomGrowth: 8.9, gdpPerCap: 64000, digitalPen: 91, adCpmScore: 42, compLevel: 70, riskIndex: 15 }
+    ];
+
+    let selectedCountryIds = ['USA', 'DEU', 'GBR', 'BRA', 'IND', 'ARE'];
+    let currentCalculatedScores = [];
+    let comparisonChartInstance = null;
+
+    // --- INITIALIZATION ---
+    window.onload = function() {
+      renderCountryChips();
+      populateTargetCountrySelect();
+      updateCalculations();
+      checkSavedApiKey();
+    };
+
+    // --- DARK MODE TOGGLE ---
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+      setTimeout(() => { updateCalculations(); }, 50);
+    }
+
+    // --- COUNTRY SELECTION MANAGEMENT ---
+    function renderCountryChips() {
+      const container = document.getElementById('countryChips');
+      container.innerHTML = MARKET_DATABASE.map(c => {
+        const isSelected = selectedCountryIds.includes(c.id);
+        return `
+          <button onclick="toggleCountrySelection('${c.id}')" class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
+            isSelected 
+              ? 'bg-brand-600 text-white shadow-sm' 
+              : 'bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+          }">
+            <span>${c.flag}</span>
+            <span>${c.name}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function toggleCountrySelection(id) {
+      if (selectedCountryIds.includes(id)) {
+        if (selectedCountryIds.length <= 2) return; // Keep at least 2
+        selectedCountryIds = selectedCountryIds.filter(cId => cId !== id);
+      } else {
+        selectedCountryIds.push(id);
+      }
+      renderCountryChips();
+      populateTargetCountrySelect();
+      updateCalculations();
+    }
+
+    function populateTargetCountrySelect() {
+      const select = document.getElementById('targetCountrySelect');
+      const selectedMarkets = MARKET_DATABASE.filter(m => selectedCountryIds.includes(m.id));
+      select.innerHTML = selectedMarkets.map(m => `<option value="${m.id}">${m.flag} ${m.name}</option>`).join('');
+    }
+
+    // --- INDUSTRY PRESETS ---
+    function applyIndustryPreset() {
+      const type = document.getElementById('industryType').value;
+      if (type === 'ecommerce') {
+        setWeights(30, 20, 20, 20, 10);
+      } else if (type === 'saas') {
+        setWeights(15, 35, 25, 10, 15);
+      } else if (type === 'fintech') {
+        setWeights(10, 30, 30, 10, 20);
+      } else if (type === 'health') {
+        setWeights(25, 25, 15, 20, 15);
+      }
+      updateCalculations();
+    }
+
+    function setWeights(ecom, gdp, digi, cpm, comp) {
+      document.getElementById('wEcom').value = ecom;
+      document.getElementById('wGdp').value = gdp;
+      document.getElementById('wDigi').value = digi;
+      document.getElementById('wCpm').value = cpm;
+      document.getElementById('wComp').value = comp;
+    }
+
+    function resetWeights() {
+      setWeights(25, 25, 20, 15, 15);
+      updateCalculations();
+    }
+
+    // --- DECISION SCIENCE CALCULATION ENGINE (MCDA) ---
+    function updateCalculations() {
+      const wEcom = parseInt(document.getElementById('wEcom').value);
+      const wGdp = parseInt(document.getElementById('wGdp').value);
+      const wDigi = parseInt(document.getElementById('wDigi').value);
+      const wCpm = parseInt(document.getElementById('wCpm').value);
+      const wComp = parseInt(document.getElementById('wComp').value);
+
+      // Update UI weight labels
+      document.getElementById('wEcomVal').innerText = wEcom + '%';
+      document.getElementById('wGdpVal').innerText = wGdp + '%';
+      document.getElementById('wDigiVal').innerText = wDigi + '%';
+      document.getElementById('wCpmVal').innerText = wCpm + '%';
+      document.getElementById('wCompVal').innerText = wComp + '%';
+
+      const totalWeight = wEcom + wGdp + wDigi + wCpm + wComp || 1;
+
+      // Filter selected countries
+      const activeMarkets = MARKET_DATABASE.filter(m => selectedCountryIds.includes(m.id));
+
+      // Calculate Normalized MCDA Scores
+      currentCalculatedScores = activeMarkets.map(m => {
+        // Normalization (0 - 100 scale)
+        const normEcom = Math.min(100, (m.ecomGrowth / 22) * 100);
+        const normGdp = Math.min(100, (m.gdpPerCap / 80000) * 100);
+        const normDigi = m.digitalPen;
+        const normCpm = m.adCpmScore; 
+        const normComp = 100 - m.compLevel; // Lower competition is better score
+
+        const weightedScore = (
+          (normEcom * wEcom) +
+          (normGdp * wGdp) +
+          (normDigi * wDigi) +
+          (normCpm * wCpm) +
+          (normComp * wComp)
+        ) / totalWeight;
+
+        const finalScore = Math.round(weightedScore);
+        const opportunityScore = Math.round((normEcom * 0.4) + (normGdp * 0.4) + (normDigi * 0.2));
+        
+        // ROI Tier
+        let roiTier = 'Moderat';
+        if (finalScore >= 75) roiTier = 'Sehr Hoch (Tier 1)';
+        else if (finalScore >= 60) roiTier = 'Hoch (Tier 2)';
+        else if (finalScore < 45) roiTier = 'Spekulativ';
+
+        return {
+          ...m,
+          finalScore,
+          opportunityScore,
+          roiTier
+        };
+      });
+
+      // Sort by score descending
+      currentCalculatedScores.sort((a, b) => b.finalScore - a.finalScore);
+
+      renderRankingTable();
+      renderMatrixCanvas();
+      renderChart();
+    }
+
+    // --- RENDER RANKING TABLE ---
+    function renderRankingTable() {
+      const tbody = document.getElementById('rankingTableBody');
+      tbody.innerHTML = currentCalculatedScores.map((item, idx) => {
+        const badgeColor = idx === 0 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300' :
+                           idx === 1 ? 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-300' :
+                           'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400';
+
+        return `
+          <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-700/30 transition">
+            <td class="py-3 px-3 flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full ${badgeColor} flex items-center justify-center text-[10px] font-bold">${idx + 1}</span>
+              <span class="text-base">${item.flag}</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200">${item.name}</span>
+            </td>
+            <td class="py-3 px-3">
+              <div class="flex items-center gap-2">
+                <span class="font-extrabold text-brand-600 dark:text-brand-400 text-base">${item.finalScore}</span>
+                <div class="w-16 bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-brand-600 h-full rounded-full" style="width: ${item.finalScore}%"></div>
+                </div>
+              </div>
+            </td>
+            <td class="py-3 px-3 text-slate-600 dark:text-slate-300">${item.opportunityScore}/100</td>
+            <td class="py-3 px-3">
+              <span class="px-2 py-0.5 rounded text-xs font-semibold ${item.riskIndex > 40 ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'}">
+                ${item.riskIndex}% Index
+              </span>
+            </td>
+            <td class="py-3 px-3 font-semibold text-xs text-slate-700 dark:text-slate-300">${item.roiTier}</td>
+            <td class="py-3 px-3 text-right">
+              <button onclick="quickSelectAiTarget('${item.id}')" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline">
+                Strategie →
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // --- 2x2 MATRIX CANVAS RENDERER ---
+    function renderMatrixCanvas() {
+      const canvas = document.getElementById('matrixCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      // Adjust canvas resolution for DPI
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+      const w = rect.width;
+      const h = rect.height;
+      const isDark = document.documentElement.classList.contains('dark');
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Axes lines
+      ctx.strokeStyle = isDark ? '#475569' : '#cbd5e1';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(w / 2, 10);
+      ctx.lineTo(w / 2, h - 10);
+      ctx.moveTo(10, h / 2);
+      ctx.lineTo(w - 10, h / 2);
+      ctx.stroke();
+
+      // Plot Markets
+      currentCalculatedScores.forEach(m => {
+        // X = Risk (0 to 100), Y = Opportunity (0 to 100)
+        const x = 20 + (m.riskIndex / 100) * (w - 40);
+        const y = (h - 20) - (m.opportunityScore / 100) * (h - 40);
+
+        // Point circle
+        ctx.beginPath();
+        ctx.arc(x, y, 7, 0, 2 * Math.PI);
+        ctx.fillStyle = m.finalScore > 65 ? '#2563eb' : '#64748b';
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Label
+        ctx.fillStyle = isDark ? '#e2e8f0' : '#1e293b';
+        ctx.font = 'bold 11px Inter, sans-serif';
+        ctx.fillText(`${m.flag} ${m.name}`, x + 10, y + 4);
+      });
+    }
+
+    // --- COMPARISON CHART (Chart.js) ---
+    function renderChart() {
+      const ctx = document.getElementById('comparisonChart').getContext('2d');
+      const isDark = document.documentElement.classList.contains('dark');
+
+      const labels = currentCalculatedScores.map(m => m.name);
+      const scores = currentCalculatedScores.map(m => m.finalScore);
+      const ecom = currentCalculatedScores.map(m => m.ecomGrowth);
+      const digi = currentCalculatedScores.map(m => m.digitalPen);
+
+      if (comparisonChartInstance) {
+        comparisonChartInstance.destroy();
+      }
+
+      comparisonChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Gesamt Expansions Score',
+              data: scores,
+              backgroundColor: '#2563eb',
+              borderRadius: 6
+            },
+            {
+              label: 'E-Com Wachstum (%)',
+              data: ecom,
+              backgroundColor: '#10b981',
+              borderRadius: 6
+            },
+            {
+              label: 'Digital Penetration (%)',
+              data: digi,
+              backgroundColor: '#8b5cf6',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: isDark ? '#cbd5e1' : '#334155', font: { family: 'Inter', size: 11 } }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: isDark ? '#94a3b8' : '#64748b' },
+              grid: { display: false }
+            },
+            y: {
+              ticks: { color: isDark ? '#94a3b8' : '#64748b' },
+              grid: { color: isDark ? '#334155' : '#e2e8f0' }
+            }
+          }
+        }
+      });
+    }
+
+    function quickSelectAiTarget(id) {
+      document.getElementById('targetCountrySelect').value = id;
+      generateAiStrategy();
+      document.getElementById('aiOutputContainer').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- AI STRATEGY ENGINE (Gemini API or Free Heuristic Fallback) ---
+    async function generateAiStrategy() {
+      const targetId = document.getElementById('targetCountrySelect').value;
+      const market = currentCalculatedScores.find(m => m.id === targetId) || MARKET_DATABASE.find(m => m.id === targetId);
+      const industry = document.getElementById('industryType').options[document.getElementById('industryType').selectedIndex].text;
+
+      const container = document.getElementById('aiOutputContainer');
+      
+      // Loading State
+      container.innerHTML = `
+        <div class="flex flex-col items-center justify-center py-10 space-y-4">
+          <div class="w-10 h-10 border-4 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+          <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">Decision Science KI analysiert Marktdaten für ${market.name}...</p>
+        </div>
+      `;
+
+      const userApiKey = localStorage.getItem('user_gemini_key');
+
+      if (userApiKey) {
+        // REAL GEMINI API CALL
+        try {
+          const prompt = `Du bist ein Top-Strategieberater für Digitales Marketing & internationale Expansion. Erstelle eine prägnante Markteintritts-Strategie für ein Unternehmen aus dem Bereich: "${industry}" für das Ziel-Land "${market.name}". 
+          Nutze folgende Metriken: Expansions-Score: ${market.finalScore}/100, E-Commerce Wachstum: ${market.ecomGrowth}%, BIP pro Kopf: $${market.gdpPerCap}, Digital Penetration: ${market.digitalPen}%.
+          Gliedere deine Antwort in 4 klare Sektionen:
+          1. Markteintritts- & Positionierungs-Strategie
+          2. Kanal- & Performance Marketing Mix
+          3. Lokalisierung & Kultur-Targeting
+          4. Risiko-Minimierung & Execution Plan.`;
+
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${userApiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+          });
+
+          const data = await response.json();
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+          if (text) {
+            renderAiResults(market, industry, text, 'Live Gemini 3 Flash');
+            return;
+          }
+        } catch (e) {
+          console.warn('API Error, falling back to heuristic engine', e);
+        }
+      }
+
+      // 100% FREE CLIENT-SIDE HEURISTIC STRATEGY GENERATOR
+      setTimeout(() => {
+        const generatedStrategy = generateHeuristicStrategyText(market, industry);
+        renderAiResults(market, industry, generatedStrategy, 'Built-in Decision Engine (100% Free)');
+      }, 700);
+    }
+
+    function generateHeuristicStrategyText(market, industry) {
+      return `
+### 1. Markteintritts- & Positionierungs-Strategie für ${market.name}
+* **Strategische Marschrichtung:** Mit einem Expansions-Score von **${market.finalScore}/100** eignet sich ${market.name} hervorragend als ${market.finalScore > 70 ? 'primärer Fokus-Markt' : 'sekundärer Expansions-Testmarkt'}.
+* **Value Proposition:** Im Bereich *${industry}* sollte die Kampagne stark auf **${market.gdpPerCap > 45000 ? 'Premium-Qualität & Innovation' : 'Preis-Leistungs-Effizienz & Localized Value'}** ausgerichtet werden.
+
+### 2. Digital Marketing & Performance Channel Mix
+* **Kanal-Gewichtung:** Aufgrund der digitalen Penetration von **${market.digitalPen}%** liegt der optimale Mix bei:
+  - **Social Commerce (Meta/TikTok):** 45% des Media-Budgets (Fokus auf Short-Form Video Ads).
+  - **Search & High-Intent (Google Ads):** 35% zur Erfassung bestehender Nachfrage.
+  - **Local Influencer Partnerships:** 20% zur Steigerung der Marken-Glaubwürdigkeit.
+* **Ad-CPM Heuristik:** Der Ad-CPM Score liegt bei ${market.adCpmScore}/100. ${market.adCpmScore > 60 ? 'Niedrige CPM-Kosten erlauben skalierbare Broad-Targeting Tests.' : 'Hohe Ad-Kosten erfordern striktes Retargeting und hohe Conversion-Optimierung.'}
+
+### 3. Lokalisierung & Cultural Targeting
+* **Sprache & Trust-Signals:** Alle Touchpoints (Landingpages, Checkouts, Ads) müssen zu 100% nativ lokalisiert werden.
+* **Payment Preference:** Integration lokaler Bezahlmethoden ist essenziell für die Conversion Rate in ${market.name}.
+
+### 4. Risk Mitigation & Decision Science Roadmap
+* **Risiko-Score:** ${market.riskIndex}% Index.
+* **Phasen-Plan:** 
+  1. *Phase 1 (Woche 1-4):* Soft-Launch mit $5k Testbudget zur Ermittlung des tatsächlichen CAC (Customer Acquisition Cost).
+  2. *Phase 2 (Woche 5-8):* Skalierung bei positivem ROAS (> 2.2x).
+      `;
+    }
+
+    function renderAiResults(market, industry, textContent, engineTag) {
+      const container = document.getElementById('aiOutputContainer');
+      
+      // Simple markdown-to-html conversion for display
+      const formattedHtml = textContent
+        .replace(/### (.*)/g, '<h4 class="text-md font-bold text-brand-600 dark:text-brand-400 mt-4 mb-2 flex items-center gap-2"><i class="fa-solid fa-angle-right text-xs"></i> $1</h4>')
+        .replace(/\* \*\*(.*?)\*\*/g, '<li class="ml-4 mb-1 list-disc"><strong class="text-slate-900 dark:text-slate-100">$1</strong>')
+        .replace(/\n/g, '<br>');
+
+      container.innerHTML = `
+        <div class="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">${market.flag}</span>
+              <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Expansions-Report: ${market.name}</h3>
+            </div>
+            <span class="text-[11px] font-semibold px-2.5 py-1 rounded bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800">${engineTag}</span>
+          </div>
+          <div class="text-sm leading-relaxed text-slate-700 dark:text-slate-300 font-sans space-y-2">
+            ${formattedHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    // --- API KEY MODAL LOGIC ---
+    function toggleApiModal() {
+      document.getElementById('apiModal').classList.toggle('hidden');
+    }
+
+    function saveApiKey() {
+      const val = document.getElementById('userApiKeyInput').value.trim();
+      if (val) {
+        localStorage.setItem('user_gemini_key', val);
+        checkSavedApiKey();
+        toggleApiModal();
+      }
+    }
+
+    function clearApiKey() {
+      localStorage.removeItem('user_gemini_key');
+      document.getElementById('userApiKeyInput').value = '';
+      checkSavedApiKey();
+      toggleApiModal();
+    }
+
+    function checkSavedApiKey() {
+      const saved = localStorage.getItem('user_gemini_key');
+      const text = document.getElementById('apiStatusText');
+      if (saved) {
+        text.innerText = 'Gemini Key (Aktiv)';
+        text.classList.add('text-emerald-600', 'font-bold');
+      } else {
+        text.innerText = 'API Key (Optional)';
+        text.classList.remove('text-emerald-600', 'font-bold');
+      }
+    }
+
+    // --- REPORT EXPORT FUNCTION ---
+    function exportExecutiveSummary() {
+      const bestMarket = currentCalculatedScores[0];
+      const summaryText = `EXECUTIVE SUMMARY: INTERNATIONAL EXPANSION STRATEGY
+--------------------------------------------------
+Top Empfohlener Zielmarkt: ${bestMarket.name} (${bestMarket.flag})
+Expansions-Score: ${bestMarket.finalScore}/100
+Expected ROI Tier: ${bestMarket.roiTier}
+Risiko-Index: ${bestMarket.riskIndex}%
+
+Analysierte Branche: ${document.getElementById('industryType').options[document.getElementById('industryType').selectedIndex].text}
+Erstellt am: ${new Date().toLocaleDateString('de-DE')}
+--------------------------------------------------
+Generiert mit GeoExpand AI (BWL + Decision Science Dashboard)`;
+
+      const blob = new Blob([summaryText], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `Expansions_Strategie_${bestMarket.id}.txt`;
+      a.click();
+    }
+  </script>
+</body>
+</html>
